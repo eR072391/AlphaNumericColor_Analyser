@@ -79,7 +79,12 @@ def release_action(event):
     
     # OKをクリックで画面を閉じる
     root.destroy()
-    ImageGrab.grab(bbox=(start_x, start_y, end_x, end_y),xdisplay=":0").save("position.png")
+    ImageGrab.grab(bbox=(start_x, start_y, end_x, end_y)).save("position.png")
+    with open('./config.ini', mode='w') as f:
+        f.write(str(start_x) + '\n')
+        f.write(str(start_y) + '\n')
+        f.write(str(end_x) + '\n')
+        f.write(str(end_y))
 
 
 def position_main(position):
@@ -183,10 +188,18 @@ def main():
     #position = [[1,2,3,4],[1,2,3,4],[1,2,3,4],[1,2,3,4],[1,2,3,4],[1,2,3,4],[1,2,3,4],[1,2,3,4],[1,2,3,4]]
     
     print(Color.GREEN + "*** 英数字判別処理 ***" + Color.RESET)
-    for i in range(1):
-        print(Color.YELLOW + "英数字判別用範囲選択",i+1,"を開始するには、" + Color.RESET)
-        input(Color.YELLOW + "Enterキーを入力してください" + Color.RESET)
-        position_main(position)
+    for i in range(8):
+        print(Color.YELLOW + "英数字判別用範囲選択",i+1,"を開始するには「y」を、" + Color.RESET)
+        flag = input(Color.YELLOW + "前回の座標で行うにはそのままEnterキーを入力してください。" + Color.RESET)
+        if flag.lower() == "y":
+            position_main(position)
+        else:
+            with open('./config.ini') as f:
+                start_x = int(f.readline())
+                start_y = int(f.readline())
+                end_x = int(f.readline())
+                end_y = int(f.readline())
+            ImageGrab.grab(bbox=(start_x, start_y, end_x, end_y)).save("position.png")
         
         analysis_alphanumeric()
     
